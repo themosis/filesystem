@@ -1,0 +1,35 @@
+{
+    "name": "themosis/filesystem",
+    "description": "The Themosis filesystem component.",
+    "type": "library",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Julien",
+            "email": "julien@themosis.com"
+        }
+    ],
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Themosis\\Components\\Filesystem\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Themosis\\Components\\Filesystem\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.1"
+    },
+    "scripts": {
+        "test": "phpunit",
+        "fix": "tools/phpcs/vendor/bin/phpcbf",
+        "sniff": "tools/phpcs/vendor/bin/phpcs"
+    }
+}
