@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Themosis\Components\Filesystem;
 
-use Themosis\Framework\Filesystem\Exceptions\FileDoesNotExist;
-use Themosis\Framework\Filesystem\Exceptions\InvalidFileException;
-use Themosis\Framework\Filesystem\Exceptions\ReadFileException;
-use Themosis\Framework\Filesystem\Exceptions\WriteFileException;
+use Themosis\Components\Filesystem\Exceptions\FileDoesNotExist;
+use Themosis\Components\Filesystem\Exceptions\InvalidFileException;
+use Themosis\Components\Filesystem\Exceptions\ReadFileException;
+use Themosis\Components\Filesystem\Exceptions\WriteFileException;
 
 class LocalFilesystem implements Filesystem {
 	public function exists( string $path ): bool {
