@@ -6,5 +6,5 @@ namespace Themosis\Components\Filesystem\Exceptions;
 
 use RuntimeException;
 
-class InvalidFileException extends RuntimeException {
+final class InvalidFileException extends RuntimeException {
 }

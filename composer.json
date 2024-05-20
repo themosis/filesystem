@@ -30,6 +30,7 @@
     "scripts": {
         "test": "phpunit",
         "fix": "tools/phpcs/vendor/bin/phpcbf",
-        "sniff": "tools/phpcs/vendor/bin/phpcs"
+        "sniff": "tools/phpcs/vendor/bin/phpcs",
+        "analyze": "tools/phpstan/vendor/bin/phpstan analyze"
     }
 }

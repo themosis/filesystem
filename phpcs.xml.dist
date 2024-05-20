@@ -28,5 +28,6 @@
 
     <rule ref="Squiz.Classes.ClassFileName"/>
 
+    <rule ref="Universal.Classes.RequireFinalClass"/>
 </ruleset>
 

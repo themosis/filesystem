@@ -9,7 +9,7 @@ use Themosis\Components\Filesystem\Exceptions\InvalidFileException;
 use Themosis\Components\Filesystem\Exceptions\ReadFileException;
 use Themosis\Components\Filesystem\Exceptions\WriteFileException;
 
-class LocalFilesystem implements Filesystem {
+final class LocalFilesystem implements Filesystem {
 	public function exists( string $path ): bool {
 		return file_exists( $path );
 	}
