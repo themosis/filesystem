@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * SPDX-FileCopyrightText: 2024 Julien Lambé <julien@themosis.com>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 declare(strict_types=1);
 
 namespace Themosis\Components\Filesystem\Tests;
@@ -11,13 +17,12 @@ use Themosis\Components\Filesystem\Filesystem;
 use Themosis\Components\Filesystem\LocalFilesystem;
 
 final class LocalFilesystemTest extends TestCase {
-    #[Test]
-    public function it_can_ensure_local_filesystem_implementation_as_filesytem_interface(): void
-    {
-        $filesystem = new LocalFilesystem();
+	#[Test]
+	public function it_can_ensure_local_filesystem_implementation_as_filesytem_interface(): void {
+		$filesystem = new LocalFilesystem();
 
-        $this->assertInstanceOf( Filesystem::class, $filesystem );
-    }
+		$this->assertInstanceOf( Filesystem::class, $filesystem );
+	}
 
 	#[Test]
 	public function it_can_check_if_file_exists_or_not(): void {
@@ -53,9 +58,9 @@ final class LocalFilesystemTest extends TestCase {
 	public function it_can_not_require_once_file_if_given_path_is_a_directory(): void {
 		$filesystem = new LocalFilesystem();
 
-        $this->expectException( InvalidFileException::class );
+		$this->expectException( InvalidFileException::class );
 
-        $filesystem->require_once( __DIR__ . '/fixtures' );
+		$filesystem->require_once( __DIR__ . '/fixtures' );
 	}
 
 	#[Test]
@@ -79,93 +84,88 @@ final class LocalFilesystemTest extends TestCase {
 		$this->assertSame( 1, $result );
 	}
 
-    #[Test]
-    public function it_can_require_file_and_share_data_with_required_file(): void
-    {
-        $filesystem = new LocalFilesystem();
+	#[Test]
+	public function it_can_require_file_and_share_data_with_required_file(): void {
+		$filesystem = new LocalFilesystem();
 
-        $result = $filesystem->require(
-            path: __DIR__ . '/fixtures/file-with-variables.php',
-            data: [
-                'foo' => 'hello',
-                'bar' => 'world',
-                'baz' => 42,
-            ],
-        );
+		$result = $filesystem->require(
+			path: __DIR__ . '/fixtures/file-with-variables.php',
+			data: [
+				'foo' => 'hello',
+				'bar' => 'world',
+				'baz' => 42,
+			],
+		);
 
-        $this->assertSame('hello', $result['foo']);
-        $this->assertSame('world', $result['bar']);
-        $this->assertSame(42, $result['baz']);
-    }
+		$this->assertSame( 'hello', $result['foo'] );
+		$this->assertSame( 'world', $result['bar'] );
+		$this->assertSame( 42, $result['baz'] );
+	}
 
-    #[Test]
-    public function it_can_require_once_a_file(): void
-    {
-        $filesystem = new LocalFilesystem();
+	#[Test]
+	public function it_can_require_once_a_file(): void {
+		$filesystem = new LocalFilesystem();
 
-        $result = $filesystem->require_once(
-            path: __DIR__ . '/fixtures/file-with-variables.php',
-            data: [
-                'foo' => 'hello',
-                'bar' => 'world',
-                'baz' => 42,
-            ],
-        );
+		$result = $filesystem->require_once(
+			path: __DIR__ . '/fixtures/file-with-variables.php',
+			data: [
+				'foo' => 'hello',
+				'bar' => 'world',
+				'baz' => 42,
+			],
+		);
 
-        $this->assertSame('hello', $result['foo']);
-        $this->assertSame('world', $result['bar']);
-        $this->assertSame(42, $result['baz']);
+		$this->assertSame( 'hello', $result['foo'] );
+		$this->assertSame( 'world', $result['bar'] );
+		$this->assertSame( 42, $result['baz'] );
 
-        $result = $filesystem->require_once(
-            path: __DIR__ . '/fixtures/file-with-variables.php',
-            data: [
-                'foo' => 'hello',
-                'bar' => 'world',
-                'baz' => 42,
-            ],
-        );
+		$result = $filesystem->require_once(
+			path: __DIR__ . '/fixtures/file-with-variables.php',
+			data: [
+				'foo' => 'hello',
+				'bar' => 'world',
+				'baz' => 42,
+			],
+		);
 
-        $this->assertTrue($result);
-    }
+		$this->assertTrue( $result );
+	}
 
-    #[Test]
-    public function it_can_not_read_file_if_it_does_not_exist(): void
-    {
-        $filesystem = new LocalFilesystem();
+	#[Test]
+	public function it_can_not_read_file_if_it_does_not_exist(): void {
+		$filesystem = new LocalFilesystem();
 
-        $this->expectException(FileDoesNotExist::class);
+		$this->expectException( FileDoesNotExist::class );
 
-        $filesystem->read( __DIR__ . '/path/does/not/exist' );
-    }
+		$filesystem->read( __DIR__ . '/path/does/not/exist' );
+	}
 
-    #[Test]
-    public function it_can_read_a_file(): void
-    {
-        $filesystem = new LocalFilesystem();
+	#[Test]
+	public function it_can_read_a_file(): void {
+		$filesystem = new LocalFilesystem();
 
-        $content = $filesystem->read( __DIR__ . '/fixtures/info.md' );
+		$content = $filesystem->read( __DIR__ . '/fixtures/info.md' );
 
-        $expected = <<<RESULT
+		$expected = <<<RESULT
 Information
 ===========
 
 This is a test file for the Themosis Filesystem component.\n
 RESULT;
 
-        $this->assertSame( $expected, $content );
-    }
+		$this->assertSame( $expected, $content );
+	}
 
-    #[Test]
-    public function it_can_write_a_file(): void
-    {
-        $filesystem = new LocalFilesystem();
-        
-        $file = __DIR__ . '/fixtures/write.txt';
+	#[Test]
+	public function it_can_write_a_file(): void {
+		$filesystem = new LocalFilesystem();
 
-        $filesystem->write( $file, 'Hello World!' );
+		$file = __DIR__ . '/fixtures/write.txt';
 
-        $expected = "Hello World!";
+		$filesystem->write( $file, 'Hello World!' );
 
-        $this->assertSame( $expected, $filesystem->read($file) );
-    }
+		$expected = 'Hello World!';
+
+		$this->assertSame( $expected, $filesystem->read( $file ) );
+	}
 }

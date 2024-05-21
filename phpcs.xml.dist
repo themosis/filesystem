@@ -1,4 +1,11 @@
 <?xml version="1.0"?>
+
+<!--
+SPDX-FileCopyrightText: 2024 Julien Lambé <julien@themosis.com>
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 <ruleset name="Themosis">
     <!-- Main -->
     <description>Themosis coding standard</description>
