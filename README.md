@@ -14,4 +14,4 @@ The Themosis filesystem component.
 Features
 --------
 
-The filesystem component pAdd README.rovides a simple API interface to handle the local filesystem of a PHP application.
+The filesystem component provides a simple API interface to handle the local filesystem of a PHP application.
