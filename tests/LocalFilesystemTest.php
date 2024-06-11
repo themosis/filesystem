@@ -166,4 +166,14 @@ RESULT;
 
 		$this->assertSame( $expected, $filesystem->read( $file ) );
 	}
+
+	#[Test]
+	public function it_can_check_if_path_is_a_directory(): void {
+		$filesystem = new LocalFilesystem();
+
+		$this->assertTrue( $filesystem->is_directory( __DIR__ ) );
+		$this->assertTrue( $filesystem->is_directory( __DIR__ . '/fixtures' ) );
+		$this->assertFalse( $filesystem->is_directory( 'path/does/not/exist' ) );
+		$this->assertFalse( $filesystem->is_directory( __DIR__ . '/fixtures/file-a.php' ) );
+	}
 }

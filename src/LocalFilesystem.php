@@ -75,4 +75,8 @@ final class LocalFilesystem implements Filesystem {
 			throw new WriteFileException( sprintf( 'Could not write file content at path %s', $path ) );
 		}
 	}
+
+	public function is_directory( string $path ): bool {
+		return is_dir( $path );
+	}
 }

@@ -20,4 +20,6 @@ interface Filesystem {
 	public function read( string $path ): string;
 
 	public function write( string $path, string $content ): void;
+
+	public function is_directory( string $path ): bool;
 }
