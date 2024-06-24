@@ -14,6 +14,15 @@ The library provides a `Filesystem` interface as well as a concrete `LocalFilesy
 The `LocalFilesystem` can only be used to manage "local" files. If you need to deal with remote files,
 you will need to provide your own implementation of the `Filesystem` interface.
 
+Installation
+------------
+
+Install the library using [Composer](https://getcomposer.org/):
+
+```shell
+composer require themosis/filesystem
+```
+
 Usage
 -----
 
