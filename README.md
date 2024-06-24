@@ -11,7 +11,7 @@ The Themosis filesystem component is a wrapper around PHP filesystem functions.
 
 The library provides a `Filesystem` interface as well as a concrete `LocalFilesystem` implementation.
 
-The `LocalFilesystem` can only be used to manage "local" files. If you need to deal with remote files,
+The `LocalFilesystem` class can only be used to manage "local" files. If you need to deal with remote files,
 you will need to provide your own implementation of the `Filesystem` interface.
 
 Installation
@@ -35,7 +35,7 @@ use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
 
-$content = $filesystem->read('/path/to/file.txt');
+$content = $filesystem->read( '/path/to/file.txt' );
 ```
 
 > The local filesystem implementation is using the PHP [file_get_contents()](https://www.php.net/manual/function.file-get-contents) function.
@@ -59,7 +59,7 @@ use Themosis\Components\Filesystem\LocalFilesystem;
 $hello = 'Hello World!';
 
 $filesystem = new LocalFilesystem();
-$filesystem->write('/path/to/file.txt', $hello');
+$filesystem->write( '/path/to/file.txt' , $hello' );
 ```
 
 > The local filesystem implementation is using the PHP [file_put_contents()](https://www.php.net/manual/function.file-put-contents) function.
@@ -81,7 +81,7 @@ First example below is just including a PHP file:
 use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
-$filesystem->require( __DIR__ . '/includes/file-a.php');
+$filesystem->require( __DIR__ . '/includes/file-a.php' );
 ```
 
 The methods behave just like their core siblings. If the included file is returning data, it will be returned
@@ -99,7 +99,7 @@ return [
 use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
-$data = $filesystem->require( __DIR__ . '/includes/file-a.php');
+$data = $filesystem->require( __DIR__ . '/includes/file-a.php' );
 ```
 
 In above code example, the `$data` variable is containing the array returned by the required file.
@@ -115,9 +115,9 @@ an array of key/value pairs as a second parameter:
 use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
-$filesystem->require( __DIR__ . '/includes/file-b.php', [
+$filesystem->require( __DIR__ . '/includes/file-b.php' , [
     'hello' => 'World!',
-]);
+] );
 
 // File B stored inside project /includes/file-b.php
 <head>
@@ -141,7 +141,7 @@ use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
 
-if ( $filesystem->exists('/path/to/file.txt') ) {
+if ( $filesystem->exists( '/path/to/file.txt' ) ) {
     // Do something...
 }
 ```
@@ -157,7 +157,7 @@ use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
 
-if ( $filesystem->is_file('/path/to/file.txt') ) {
+if ( $filesystem->is_file( '/path/to/file.txt' ) ) {
     // Do something...
 }
 ```
@@ -173,6 +173,6 @@ use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
 
-if ( $filesystem->is_directory('/path/to/dir') ) {
+if ( $filesystem->is_directory( '/path/to/dir' ) ) {
     // Do something...
 }
