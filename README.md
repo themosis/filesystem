@@ -128,7 +128,7 @@ $filesystem->require( __DIR__ . '/includes/file-b.php' , [
 The `File B` in above code example, is containing HTML content and echoes the `$hello` variable that
 was passed in the `require()` filesystem method as a second parameter. 
 
-> The API is the same when using the `require_once()` method. Watchout the returned value though.
+> The API is the same when using the `requireOnce()` method. Watchout the returned value though.
 
 ### File exists
 
@@ -148,7 +148,7 @@ if ( $filesystem->exists( '/path/to/file.txt' ) ) {
 
 ### Check path is a file
 
-You can verify if the given path is targeting a file using the `is_file()` method:
+You can verify if the given path is targeting a file using the `isFile()` method:
 
 ```php
 <?php
@@ -157,14 +157,14 @@ use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
 
-if ( $filesystem->is_file( '/path/to/file.txt' ) ) {
+if ( $filesystem->isFile( '/path/to/file.txt' ) ) {
     // Do something...
 }
 ```
 
 ### Check path is a directory
 
-You can verify if the given path is targeting a directory using the `is_directory()` method:
+You can verify if the given path is targeting a directory using the `isDirectory()` method:
 
 ```php
 <?php
@@ -173,6 +173,6 @@ use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
 
-if ( $filesystem->is_directory( '/path/to/dir' ) ) {
+if ( $filesystem->isDirectory( '/path/to/dir' ) ) {
     // Do something...
 }
