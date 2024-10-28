@@ -11,8 +11,7 @@ The Themosis filesystem component is a wrapper around PHP filesystem functions.
 
 The library provides a `Filesystem` interface as well as a concrete `LocalFilesystem` implementation.
 
-The `LocalFilesystem` class can only be used to manage "local" files. If you need to deal with remote files,
-you will need to provide your own implementation of the `Filesystem` interface.
+The `LocalFilesystem` class can only be used to manage "local" files. If you need to deal with remote files, you will need to provide your own implementation of the `Filesystem` interface.
 
 Installation
 ------------
@@ -35,7 +34,7 @@ use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
 
-$content = $filesystem->read( '/path/to/file.txt' );
+$content = $filesystem->read('/path/to/file.txt');
 ```
 
 > The local filesystem implementation is using the PHP [file_get_contents()](https://www.php.net/manual/function.file-get-contents) function.
@@ -59,7 +58,7 @@ use Themosis\Components\Filesystem\LocalFilesystem;
 $hello = 'Hello World!';
 
 $filesystem = new LocalFilesystem();
-$filesystem->write( '/path/to/file.txt' , $hello' );
+$filesystem->write('/path/to/file.txt' , $hello');
 ```
 
 > The local filesystem implementation is using the PHP [file_put_contents()](https://www.php.net/manual/function.file-put-contents) function.
@@ -68,10 +67,9 @@ If the filesystem cannot write the content on the given file, it will throw a `W
 
 ### Require PHP file
 
-This is PHP specific. You can require any PHP file using the filesystem `require()` or `require_once()` methods.
+This is PHP specific. You can require any PHP file using the filesystem `require()` or `requireOnce()` methods.
 
-Each one of them is leveraging the core PHP function of its name with the added option where you can pass and
-expose variables to the included PHP file.
+Each one of them is leveraging the core PHP function of its name with the added option where you can pass and expose variables to the included PHP file.
 
 First example below is just including a PHP file:
 
@@ -81,11 +79,10 @@ First example below is just including a PHP file:
 use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
-$filesystem->require( __DIR__ . '/includes/file-a.php' );
+$filesystem->require(__DIR__ . '/includes/file-a.php');
 ```
 
-The methods behave just like their core siblings. If the included file is returning data, it will be returned
-as well by the filesystem require methods:
+The methods behave just like their core siblings. If the included file is returning data, it will be returned as well by the filesystem require methods:
 
 ```php
 // File A stored inside project /includes/file-a.php
@@ -99,7 +96,7 @@ return [
 use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
-$data = $filesystem->require( __DIR__ . '/includes/file-a.php' );
+$data = $filesystem->require(__DIR__ . '/includes/file-a.php');
 ```
 
 In above code example, the `$data` variable is containing the array returned by the required file.
@@ -115,9 +112,9 @@ an array of key/value pairs as a second parameter:
 use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
-$filesystem->require( __DIR__ . '/includes/file-b.php' , [
+$filesystem->require(__DIR__ . '/includes/file-b.php', [
     'hello' => 'World!',
-] );
+]);
 
 // File B stored inside project /includes/file-b.php
 <head>
@@ -125,8 +122,7 @@ $filesystem->require( __DIR__ . '/includes/file-b.php' , [
 </head>
 ```
 
-The `File B` in above code example, is containing HTML content and echoes the `$hello` variable that
-was passed in the `require()` filesystem method as a second parameter. 
+The `File B` in above code example, is containing HTML content and echoes the `$hello` variable that was passed in the `require()` filesystem method as a second parameter. 
 
 > The API is the same when using the `requireOnce()` method. Watchout the returned value though.
 
@@ -141,7 +137,7 @@ use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
 
-if ( $filesystem->exists( '/path/to/file.txt' ) ) {
+if ( $filesystem->exists('/path/to/file.txt')) {
     // Do something...
 }
 ```
@@ -157,7 +153,7 @@ use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
 
-if ( $filesystem->isFile( '/path/to/file.txt' ) ) {
+if ( $filesystem->isFile('/path/to/file.txt')) {
     // Do something...
 }
 ```
@@ -173,6 +169,6 @@ use Themosis\Components\Filesystem\LocalFilesystem;
 
 $filesystem = new LocalFilesystem();
 
-if ( $filesystem->isDirectory( '/path/to/dir' ) ) {
+if ($filesystem->isDirectory('/path/to/dir')) {
     // Do something...
 }
