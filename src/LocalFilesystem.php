@@ -31,7 +31,7 @@ final class LocalFilesystem implements Filesystem
 
         return ( static function () use ($__path, $__data) {
             // phpcs:ignore
-			extract( $__data, EXTR_SKIP );
+	    extract( $__data, EXTR_SKIP );
 
             return require $__path;
         } )();
