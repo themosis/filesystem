@@ -10,7 +10,7 @@ namespace Themosis\Components\Filesystem\Tests;
 
 use PHPUnit\Framework\Attributes\Test;
 use Themosis\Components\Filesystem\Exceptions\FileDoesNotExist;
-use Themosis\Components\Filesystem\Exceptions\InvalidFileException;
+use Themosis\Components\Filesystem\Exceptions\InvalidFile;
 use Themosis\Components\Filesystem\Filesystem;
 use Themosis\Components\Filesystem\LocalFilesystem;
 
@@ -52,7 +52,7 @@ final class LocalFilesystemTest extends TestCase
     {
         $filesystem = new LocalFilesystem();
 
-        $this->expectException(InvalidFileException::class);
+        $this->expectException(InvalidFile::class);
 
         $filesystem->require(__DIR__ . '/fixtures');
     }
@@ -62,7 +62,7 @@ final class LocalFilesystemTest extends TestCase
     {
         $filesystem = new LocalFilesystem();
 
-        $this->expectException(InvalidFileException::class);
+        $this->expectException(InvalidFile::class);
 
         $filesystem->requireOnce(__DIR__ . '/fixtures');
     }

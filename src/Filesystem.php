@@ -23,4 +23,6 @@ interface Filesystem
     public function write(string $path, string $content): void;
 
     public function isDirectory(string $path): bool;
+
+    public function makeDirectory(string $path, int $permissions = 0755): void;
 }

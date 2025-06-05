@@ -10,6 +10,6 @@ namespace Themosis\Components\Filesystem\Exceptions;
 
 use RuntimeException;
 
-final class ReadFileException extends RuntimeException
+final class CannotReadFromFile extends RuntimeException
 {
 }

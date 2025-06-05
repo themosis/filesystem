@@ -8,10 +8,11 @@ declare(strict_types=1);
 
 namespace Themosis\Components\Filesystem;
 
+use Themosis\Components\Filesystem\Exceptions\CannotMakeDirectory;
 use Themosis\Components\Filesystem\Exceptions\FileDoesNotExist;
-use Themosis\Components\Filesystem\Exceptions\InvalidFileException;
-use Themosis\Components\Filesystem\Exceptions\ReadFileException;
-use Themosis\Components\Filesystem\Exceptions\WriteFileException;
+use Themosis\Components\Filesystem\Exceptions\InvalidFile;
+use Themosis\Components\Filesystem\Exceptions\CannotReadFromFile;
+use Themosis\Components\Filesystem\Exceptions\CannotWriteToFile;
 
 final class LocalFilesystem implements Filesystem
 {
@@ -23,7 +24,7 @@ final class LocalFilesystem implements Filesystem
     public function require(string $path, array $data = []): mixed
     {
         if (! $this->isFile($path)) {
-            throw new InvalidFileException(sprintf('Invalid file given at path %s', $path));
+            throw new InvalidFile(sprintf('Invalid file given at path %s', $path));
         }
 
         $__path = $path;
@@ -40,7 +41,7 @@ final class LocalFilesystem implements Filesystem
     public function requireOnce(string $path, array $data = []): mixed
     {
         if (! $this->isFile($path)) {
-            throw new InvalidFileException(sprintf('Invalid file given at path %s', $path));
+            throw new InvalidFile(sprintf('Invalid file given at path %s', $path));
         }
 
         $__path = $path;
@@ -68,7 +69,7 @@ final class LocalFilesystem implements Filesystem
         $content = file_get_contents($path);
 
         if (false === $content) {
-            throw new ReadFileException(sprintf('Cannot read file content for file at path %s', $path));
+            throw new CannotReadFromFile(sprintf('Cannot read content for file at path %s', $path));
         }
 
         return $content;
@@ -79,12 +80,21 @@ final class LocalFilesystem implements Filesystem
         $bytes = file_put_contents($path, $content);
 
         if (false === $bytes) {
-            throw new WriteFileException(sprintf('Could not write file content at path %s', $path));
+            throw new CannotWriteToFile(sprintf('Cannot write file content at path %s', $path));
         }
     }
 
     public function isDirectory(string $path): bool
     {
         return is_dir($path);
+    }
+
+    public function makeDirectory(string $path, int $permissions = 0755): void
+    {
+	$result = mkdir($path, $permissions, true);
+
+	if (false === $result) {
+	    throw new CannotMakeDirectory(sprintf('Cannot make directory at path %s', $path));
+	}
     }
 }
