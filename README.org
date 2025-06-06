@@ -1,8 +1,9 @@
-# SPDX-FileCopyrightText: 2025 Julien Lambé<julien@themosis.com>
-#
-# SPDX-License-Identifier: GPL-3.0-or-later
+#+TITLE: Themosis Filesystem
+#+AUTHOR: Julien Lambé
+#+LANGUAGE: en
 
-* Themosis Filesystem
+# SPDX-FileCopyrightText: 2025 Julien Lambé<julien@themosis.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 The Themosis filesystem component is a wrapper around PHP filesystem functions.
 
@@ -61,7 +62,10 @@ Pass the path to the file as first parameter and the content as the second param
   $filesystem->write('/path/to/file.txt' , $hello');
 #+end_src
 
-> The local filesystem implementation is using the PHP [[https://www.php.net/manual/function.file-put-contents][file_put_contents()]] function.
+#+begin_quote
+The local filesystem implementation is using the PHP
+[[https://www.php.net/manual/function.file-put-contents][file_put_contents()]] function.
+#+end_quote
 
 If the filesystem cannot write the content on the given file, it will throw a ~WriteFileException~ exception.
 
@@ -101,7 +105,7 @@ The methods behave just like their core siblings. If the included file is return
 
 In above code example, the ~$data~ variable is containing the array returned by the required file.
 
-***# Passing data
+**** Passing data
 
 When you require a file using the filesystem, you can pass data to the included file by providing
 an array of key/value pairs as a second parameter:
@@ -124,7 +128,9 @@ an array of key/value pairs as a second parameter:
 
 The `File B` in above code example, is containing HTML content and echoes the ~$hello~ variable that was passed in the ~require()~ filesystem method as a second parameter. 
 
-> The API is the same when using the ~requireOnce()~ method. Watchout the returned value though.
+#+begin_quote
+The API is the same when using the ~requireOnce()~ method. Watchout the returned value though.
+#+end_quote
 
 *** File exists
 
@@ -188,7 +194,9 @@ You can create new directories by calling the ~makeDirectory()~ method:
   $filesystem->makeDirectory('/path/to/new/directory');
 #+end_src
 
-> If directory already exists, an exception is thrown.
+#+begin_quote
+If directory already exists, an exception is thrown.
+#+end_quote
 
 You can also create a nested directory. If your directory path contains parent
 directories that do not yet exist, those directories are also created.
