@@ -1,0 +1,221 @@
+# SPDX-FileCopyrightText: 2025 Julien Lambé<julien@themosis.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+* Themosis Filesystem
+
+The Themosis filesystem component is a wrapper around PHP filesystem functions.
+
+The library provides a ~Filesystem~ interface as well as a concrete ~LocalFilesystem~ implementation.
+
+The ~LocalFilesystem~ class can only be used to manage "local" files. If you need to deal with remote files, you will need to provide your own implementation of the ~Filesystem~ interface.
+
+** Installation
+
+Install the library using [[https://getcomposer.org/][Composer]]:
+
+#+begin_src shell
+  composer require themosis/filesystem
+#+end_src
+
+** Usage
+
+*** Read file content
+
+You can read the content of any file by passing its path to the ~read()~:
+
+#+begin_src php
+  <?php
+  
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+
+  $content = $filesystem->read('/path/to/file.txt');
+#+end_src
+
+#+begin_quote
+The local filesystem implementation is using the PHP
+[[https://www.php.net/manual/function.file-get-contents][file_get_contents()]] function.
+#+end_quote
+
+The implementation is also doing some checks before and after reading the content.
+
+For example, the method is first checking if the file exists before reading it.
+If the file does not exist, the method will throw a ~FileDoesNotExist~ exception.
+
+After accessing the content, the method is checking to see if the content is actually readable.
+If the content is somehow corrupted, the method will throw a ~ReadFileException~ exception.
+
+*** Write file content
+
+You can wrtite content to any file by calling the ~write()~ method.
+Pass the path to the file as first parameter and the content as the second parameter:
+
+#+begin_src php
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $hello = 'Hello World!';
+
+  $filesystem = new LocalFilesystem();
+  $filesystem->write('/path/to/file.txt' , $hello');
+#+end_src
+
+> The local filesystem implementation is using the PHP [[https://www.php.net/manual/function.file-put-contents][file_put_contents()]] function.
+
+If the filesystem cannot write the content on the given file, it will throw a ~WriteFileException~ exception.
+
+*** Require PHP file
+
+This is PHP specific. You can require any PHP file using the filesystem ~require()~ or ~requireOnce()~ methods.
+
+Each one of them is leveraging the core PHP function of its name with the added option where you can pass and expose variables to the included PHP file.
+
+First example below is just including a PHP file:
+
+#+begin_src php
+  <?php
+
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+  $filesystem->require(__DIR__ . '/includes/file-a.php');
+#+end_src
+
+The methods behave just like their core siblings. If the included file is returning data, it will be returned as well by the filesystem require methods:
+
+#+begin_src php
+  // File A stored inside project /includes/file-a.php
+  <?php
+
+  return [
+      'hello' => 'World!',
+  ];
+
+  // Main file requires File A
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+  $data = $filesystem->require(__DIR__ . '/includes/file-a.php');
+#+end_src
+
+In above code example, the ~$data~ variable is containing the array returned by the required file.
+
+***# Passing data
+
+When you require a file using the filesystem, you can pass data to the included file by providing
+an array of key/value pairs as a second parameter:
+
+#+begin_src php
+  <?php
+  
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+  $filesystem->require(__DIR__ . '/includes/file-b.php', [
+      'hello' => 'World!',
+  ]);
+
+  // File B stored inside project /includes/file-b.php
+  <head>
+      <title><?= $hello ?></title>
+  </head>
+#+end_src
+
+The `File B` in above code example, is containing HTML content and echoes the ~$hello~ variable that was passed in the ~require()~ filesystem method as a second parameter. 
+
+> The API is the same when using the ~requireOnce()~ method. Watchout the returned value though.
+
+*** File exists
+
+The filesystem exposes the ~exists()~ method to let you check if a file exists:
+
+#+begin_src php
+  <?php
+
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+
+  if ( $filesystem->exists('/path/to/file.txt')) {
+      // Do something...
+  }
+#+end_src
+
+*** Check path is a file
+
+You can verify if the given path is targeting a file using the ~isFile()~ method:
+
+#+begin_src php
+  <?php
+
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+
+  if ( $filesystem->isFile('/path/to/file.txt')) {
+      // Do something...
+  }
+#+end_src
+
+*** Check path is a directory
+
+You can verify if the given path is targeting a directory using the ~isDirectory()~ method:
+
+#+begin_src php
+  <?php
+
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+
+  if ($filesystem->isDirectory('/path/to/dir')) {
+      // Do something...
+  }
+#+end_src
+
+*** Create a directory
+
+You can create new directories by calling the ~makeDirectory()~ method:
+
+#+begin_src php
+  <?php
+  
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+
+  $filesystem->makeDirectory('/path/to/new/directory');
+#+end_src
+
+> If directory already exists, an exception is thrown.
+
+You can also create a nested directory. If your directory path contains parent
+directories that do not yet exist, those directories are also created.
+
+By default, the ~LocalFilesystem~ will set chmod permissions on the new directory to ~777~, which provides full access to it.
+
+**** Set directory permissions
+
+When creating a new directory, you can pass a ~Permissions~ parameter to limit the access to it:
+
+#+begin_src php
+<?php
+
+use Themosis\Components\Filesystem\LocalFilesystem;
+
+$filesystem = new LocalFilesystem();
+
+$filesystem->makeDirectory('/path/to/new/directory', new PosixPermissions(
+    ownerBits: 7,
+    groupBits: 5,
+    othersBits: 5,
+));
+#+end_src
+
+Permissions can be defined into your project even if running under Windows.
+The permissions are ignored when the application runs on Windows.
+
+The ~LocalFilesystem~ implementation is using the PHP ~mkdir()~ function under the hood.
+For details on which permissions bits to define, check documentation for the system ~chmod~ command.
+
