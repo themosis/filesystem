@@ -13,6 +13,8 @@ interface Filesystem
 {
     public function exists(string $path): bool;
 
+    public function doesNotExist(string $path): bool;
+
     public function require(string $path, array $data = []): mixed;
 
     public function requireOnce(string $path, array $data = []): mixed;
@@ -26,4 +28,6 @@ interface Filesystem
     public function isDirectory(string $path): bool;
 
     public function makeDirectory(string $path, ?Permissions $permissions = null): void;
+
+    public function deleteFile(string $path): void;
 }

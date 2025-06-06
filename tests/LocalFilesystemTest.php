@@ -242,4 +242,40 @@ RESULT;
 
         rmdir($path);
     }
+
+    #[Test]
+    public function itCanDeleteAnExistingFile(): void
+    {
+        $filesystem = new LocalFilesystem();
+
+        $filepath = __DIR__ . '/fixtures/new-file.txt';
+
+        $filesystem->write($filepath, 'This is a dummy text file.');
+        
+        $this->assertTrue($filesystem->exists($filepath));
+
+        $filesystem->deleteFile($filepath);
+
+        $this->assertFalse($filesystem->exists($filepath));
+    }
+
+    #[Test]
+    public function itCanNotDeleteAFile_ifItDoesNotExist(): void
+    {
+        $this->expectException(FileDoesNotExist::class);
+
+        $filesystem = new LocalFilesystem();
+
+        $filesystem->deleteFile(__DIR__ . '/it/does/not/exist.php');
+    }
+
+    #[Test]
+    public function itCanNotDeleteAFile_ifPathIsInvalid(): void
+    {
+        $this->expectException(InvalidFile::class);
+
+        $filesystem = new LocalFilesystem();
+
+        $filesystem->deleteFile(__DIR__ . '/fixtures');
+    }
 }
