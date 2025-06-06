@@ -6,6 +6,4 @@ namespace Themosis\Components\Filesystem\Exceptions;
 
 use RuntimeException;
 
-final class CannotMakeDirectory extends RuntimeException
-{
-}
+final class DirectoryAlreadyExists extends RuntimeException {}

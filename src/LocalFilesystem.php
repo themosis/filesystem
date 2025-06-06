@@ -13,6 +13,7 @@ use Themosis\Components\Filesystem\Exceptions\FileDoesNotExist;
 use Themosis\Components\Filesystem\Exceptions\InvalidFile;
 use Themosis\Components\Filesystem\Exceptions\CannotReadFromFile;
 use Themosis\Components\Filesystem\Exceptions\CannotWriteToFile;
+use Themosis\Components\Filesystem\Exceptions\DirectoryAlreadyExists;
 
 final class LocalFilesystem implements Filesystem
 {
@@ -30,12 +31,12 @@ final class LocalFilesystem implements Filesystem
         $__path = $path;
         $__data = $data;
 
-        return ( static function () use ($__path, $__data) {
+        return (static function () use ($__path, $__data) {
             // phpcs:ignore
-	    extract( $__data, EXTR_SKIP );
+            extract($__data, EXTR_SKIP);
 
             return require $__path;
-        } )();
+        })();
     }
 
     public function requireOnce(string $path, array $data = []): mixed
@@ -47,12 +48,12 @@ final class LocalFilesystem implements Filesystem
         $__path = $path;
         $__data = $data;
 
-        return ( static function () use ($__path, $__data) {
+        return (static function () use ($__path, $__data) {
             // phpcs:ignore
-			extract( $__data, EXTR_SKIP );
+            extract($__data, EXTR_SKIP);
 
             return require_once $__path;
-        } )();
+        })();
     }
 
     public function isFile(string $path): bool
@@ -89,12 +90,17 @@ final class LocalFilesystem implements Filesystem
         return is_dir($path);
     }
 
-    public function makeDirectory(string $path, int $permissions = 0755): void
+    public function makeDirectory(string $path, ?Permissions $permissions = null): void
     {
-	$result = mkdir($path, $permissions, true);
+        if ($this->isDirectory($path)) {
+            throw new DirectoryAlreadyExists(sprintf('Directory exists at path %s', $path));
+        }
+        
+        $permissions = $permissions ?? PosixPermissions::default();
+        $result = mkdir($path, octdec((string) $permissions), true);
 
-	if (false === $result) {
-	    throw new CannotMakeDirectory(sprintf('Cannot make directory at path %s', $path));
-	}
+        if (false === $result) {
+            throw new CannotMakeDirectory(sprintf('Cannot make directory at path %s', $path));
+        }
     }
 }

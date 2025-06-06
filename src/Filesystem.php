@@ -24,5 +24,5 @@ interface Filesystem
 
     public function isDirectory(string $path): bool;
 
-    public function makeDirectory(string $path, int $permissions = 0755): void;
+    public function makeDirectory(string $path, ?Permissions $permissions = null): void;
 }

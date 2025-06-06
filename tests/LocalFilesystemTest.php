@@ -9,13 +9,14 @@ declare(strict_types=1);
 namespace Themosis\Components\Filesystem\Tests;
 
 use PHPUnit\Framework\Attributes\Test;
+use Themosis\Components\Filesystem\Exceptions\DirectoryAlreadyExists;
 use Themosis\Components\Filesystem\Exceptions\FileDoesNotExist;
 use Themosis\Components\Filesystem\Exceptions\InvalidFile;
 use Themosis\Components\Filesystem\Filesystem;
 use Themosis\Components\Filesystem\LocalFilesystem;
 
 final class LocalFilesystemTest extends TestCase
-{
+{   
     #[Test]
     public function it_can_ensure_local_filesystem_implementation_as_filesytem_interface(): void
     {
@@ -189,5 +190,55 @@ RESULT;
         $this->assertTrue($filesystem->isDirectory(__DIR__ . '/fixtures'));
         $this->assertFalse($filesystem->isDirectory('path/does/not/exist'));
         $this->assertFalse($filesystem->isDirectory(__DIR__ . '/fixtures/file-a.php'));
+    }
+
+    #[Test]
+    public function itCanMakeADirectory_ifDirectoryDoesNotExist(): void
+    {
+        $filesystem = new LocalFilesystem();
+
+        $path = __DIR__ . '/fixtures/new-dir';
+
+        $this->assertFalse($filesystem->isDirectory($path));
+
+        $filesystem->makeDirectory($path);
+
+        $this->assertTrue($filesystem->isDirectory($path));
+
+        rmdir($path);
+    }
+
+    #[Test]
+    public function itCanNotMakeADirectory_ifDirectoryAlreadyExists(): void
+    {
+        $filesystem = new LocalFilesystem();
+
+        $path = __DIR__ . '/fixtures';
+
+        $this->assertTrue($filesystem->isDirectory($path));
+
+        $this->expectException(DirectoryAlreadyExists::class);
+        
+        $filesystem->makeDirectory($path);
+    }
+
+    #[Test]
+    public function itCanMakeNestedDirectory(): void
+    {
+        $filesystem = new LocalFilesystem();
+
+        $rootpath = __DIR__ . '/fixtures/a-dir';
+        $parentpath = $rootpath . '/with-parent';
+        $path = $parentpath . '/and-child';
+
+        $this->assertFalse($filesystem->isDirectory($path));
+
+        $filesystem->makeDirectory($path);
+
+        $this->assertTrue($filesystem->isDirectory($rootpath));
+        $this->assertTrue($filesystem->isDirectory($parentpath));
+        $this->assertTrue($filesystem->isDirectory($path));
+
+        rmdir($path);
     }
 }
