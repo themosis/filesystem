@@ -49,7 +49,7 @@ final class PosixPermissionsTest extends TestCase
     public function itCanProvide_aDefaultPermissionOctalString(): void
     {
         $permissions = PosixPermissions::default();
-        
+
         $this->assertSame('0777', (string) $permissions);
         $this->assertSame(0777, octdec((string) $permissions));
     }

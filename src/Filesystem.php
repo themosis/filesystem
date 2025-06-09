@@ -30,4 +30,6 @@ interface Filesystem
     public function makeDirectory(string $path, ?Permissions $permissions = null): void;
 
     public function deleteFile(string $path): void;
+
+    public function deleteDirectory(string $path, bool $recursive = false): void;
 }

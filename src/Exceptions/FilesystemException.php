@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Themosis\Components\Filesystem\Exceptions;
 
-use RuntimeException;
+use ErrorException;
 
-final class CannotDeleteFile extends RuntimeException {}
+class FilesystemException extends ErrorException
+{
+}

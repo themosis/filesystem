@@ -11,13 +11,13 @@ namespace Themosis\Components\Filesystem\Tests;
 
 use PHPUnit\Framework\Attributes\Test;
 use Themosis\Components\Filesystem\Exceptions\DirectoryAlreadyExists;
-use Themosis\Components\Filesystem\Exceptions\FileDoesNotExist;
+use Themosis\Components\Filesystem\Exceptions\FilesystemException;
 use Themosis\Components\Filesystem\Exceptions\InvalidFile;
 use Themosis\Components\Filesystem\Filesystem;
 use Themosis\Components\Filesystem\LocalFilesystem;
 
 final class LocalFilesystemTest extends TestCase
-{   
+{
     #[Test]
     public function it_can_ensure_local_filesystem_implementation_as_filesytem_interface(): void
     {
@@ -54,7 +54,7 @@ final class LocalFilesystemTest extends TestCase
     {
         $filesystem = new LocalFilesystem();
 
-        $this->expectException(InvalidFile::class);
+        $this->expectException(FilesystemException::class);
 
         $filesystem->require(__DIR__ . '/fixtures');
     }
@@ -64,7 +64,7 @@ final class LocalFilesystemTest extends TestCase
     {
         $filesystem = new LocalFilesystem();
 
-        $this->expectException(InvalidFile::class);
+        $this->expectException(FilesystemException::class);
 
         $filesystem->requireOnce(__DIR__ . '/fixtures');
     }
@@ -146,7 +146,7 @@ final class LocalFilesystemTest extends TestCase
     {
         $filesystem = new LocalFilesystem();
 
-        $this->expectException(FileDoesNotExist::class);
+        $this->expectException(FilesystemException::class);
 
         $filesystem->read(__DIR__ . '/path/does/not/exist');
     }
@@ -183,7 +183,19 @@ RESULT;
     }
 
     #[Test]
-    public function it_can_check_if_path_is_a_directory(): void
+    public function itCanNotWriteContent_ifPathIsADirectory(): void
+    {
+        $filesystem = new LocalFilesystem();
+
+        $file = __DIR__ . '/fixtures';
+
+        $this->expectException(FilesystemException::class);
+
+        $filesystem->write($file, 'New content for the file.');
+    }
+
+    #[Test]
+    public function itCanCheckPathIsADirectory(): void
     {
         $filesystem = new LocalFilesystem();
 
@@ -218,8 +230,8 @@ RESULT;
 
         $this->assertTrue($filesystem->isDirectory($path));
 
-        $this->expectException(DirectoryAlreadyExists::class);
-        
+        $this->expectException(FilesystemException::class);
+
         $filesystem->makeDirectory($path);
     }
 
@@ -241,6 +253,8 @@ RESULT;
         $this->assertTrue($filesystem->isDirectory($path));
 
         rmdir($path);
+        rmdir($parentpath);
+        rmdir($rootpath);
     }
 
     #[Test]
@@ -251,7 +265,7 @@ RESULT;
         $filepath = __DIR__ . '/fixtures/new-file.txt';
 
         $filesystem->write($filepath, 'This is a dummy text file.');
-        
+
         $this->assertTrue($filesystem->exists($filepath));
 
         $filesystem->deleteFile($filepath);
@@ -262,7 +276,7 @@ RESULT;
     #[Test]
     public function itCanNotDeleteAFile_ifItDoesNotExist(): void
     {
-        $this->expectException(FileDoesNotExist::class);
+        $this->expectException(FilesystemException::class);
 
         $filesystem = new LocalFilesystem();
 
@@ -272,10 +286,92 @@ RESULT;
     #[Test]
     public function itCanNotDeleteAFile_ifPathIsInvalid(): void
     {
-        $this->expectException(InvalidFile::class);
+        $this->expectException(FilesystemException::class);
 
         $filesystem = new LocalFilesystem();
 
         $filesystem->deleteFile(__DIR__ . '/fixtures');
+    }
+
+    #[Test]
+    public function itCanDeleteDirectory_ifEmpty(): void
+    {
+        $filesystem = new LocalFilesystem();
+
+        $path = __DIR__ . '/fixtures/abc';
+
+        if (! $filesystem->isDirectory($path)) {
+            $filesystem->makeDirectory($path);
+        }
+
+        $this->assertTrue($filesystem->isDirectory($path));
+
+        $filesystem->deleteDirectory($path);
+
+        $this->assertFalse($filesystem->isDirectory($path));
+    }
+
+    #[Test]
+    public function itCanNotDeleteDirectory_ifNotEmpty(): void
+    {
+        $filesystem = new LocalFilesystem();
+
+        $path = __DIR__ . '/fixtures/def';
+
+        if (! $filesystem->isDirectory($path)) {
+            $filesystem->makeDirectory($path);
+
+            $filesystem->write($path . '/file_a.txt', 'Content A');
+            $filesystem->write($path . '/file_b.xml', '<xml></xml>');
+        }
+
+        $this->expectException(FilesystemException::class);
+
+        $filesystem->deleteDirectory($path);
+    }
+
+    #[Test]
+    public function itCanDeleteNonEmptyDirectory_ifRecursive(): void
+    {
+        $filesystem = new LocalFilesystem();
+
+        $path = __DIR__ . '/fixtures/xyz';
+
+        if (! $filesystem->isDirectory($path)) {
+            $filesystem->makeDirectory($path);
+
+            $filesystem->write($path . '/file_a.org', '#+TITLE: Test File');
+
+            $nestedDirectoryA = $path . '/aaa';
+
+            if (! $filesystem->isDirectory($nestedDirectoryA)) {
+                $filesystem->makeDirectory($nestedDirectoryA);
+
+                $filesystem->write($nestedDirectoryA . '/file_b.txt', 'Nested file B');
+                $filesystem->write($nestedDirectoryA . '/file_c.php', '<?php // Another file');
+
+                $nestedDirectoryB = $nestedDirectoryA . '/bbb';
+
+                if (! $filesystem->isDirectory($nestedDirectoryB)) {
+                    $filesystem->makeDirectory($nestedDirectoryB);
+
+                    $filesystem->write($nestedDirectoryB . '/file_d.md', '### Test');
+                }
+            }
+        }
+
+        $this->assertTrue($filesystem->isDirectory($path));
+        $this->assertTrue($filesystem->isFile($path . '/file_a.org'));
+        $this->assertTrue($filesystem->isDirectory($path . '/aaa'));
+        $this->assertTrue($filesystem->isFile($path . '/aaa/file_b.txt'));
+        $this->assertTrue($filesystem->isFile($path . '/aaa/file_c.php'));
+        $this->assertTrue($filesystem->isDirectory($path . '/aaa/bbb'));
+        $this->assertTrue($filesystem->isFile($path . '/aaa/bbb/file_d.md'));
+
+        $filesystem->deleteDirectory($path, recursive: true);
+
+        $this->assertFalse($filesystem->isDirectory($path));
+        $this->assertFalse($filesystem->isDirectory($path . '/aaa'));
+        $this->assertFalse($filesystem->isDirectory($path . '/aaa/bbb'));
     }
 }
