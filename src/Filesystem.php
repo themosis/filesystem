@@ -15,8 +15,20 @@ interface Filesystem
 
     public function doesNotExist(string $path): bool;
 
+    /**
+     * @param string $path
+     * @param array<string, mixed> $data
+     *
+     * @return mixed
+     */
     public function require(string $path, array $data = []): mixed;
 
+    /**
+     * @param string $path
+     * @param array<string, mixed> $data
+     *
+     * @return mixed
+     */
     public function requireOnce(string $path, array $data = []): mixed;
 
     public function isLink(string $path): bool;

@@ -20,7 +20,7 @@ final class LocalFilesystem implements Filesystem
 {
     public function exists(string $path): bool
     {
-        return self::sandbox(function () use ($path): bool {
+        return (bool) self::sandbox(function () use ($path): bool {
             return file_exists($path);
         })(fn(bool $exists) => $exists);
     }
@@ -62,23 +62,29 @@ final class LocalFilesystem implements Filesystem
 
     public function isLink(string $path): bool
     {
-        return self::sandbox(function () use ($path): bool {
+        return (bool) self::sandbox(function () use ($path): bool {
             return is_link($path);
         })(fn(bool $isLink) => $isLink);
     }
 
     public function isFile(string $path): bool
     {
-        return self::sandbox(function () use ($path): bool {
+        return (bool) self::sandbox(function () use ($path): bool {
             return is_file($path);
         })(fn(bool $isFile) => $isFile);
     }
 
     public function read(string $path): string
     {
-        return self::sandbox(function () use ($path): string {
-            return file_get_contents($path);
+        /** @var string $content */
+        $content = self::sandbox(function () use ($path): string {
+            /** @var string $content */
+            $content = file_get_contents($path);
+
+            return $content;
         })(fn(string $content) => $content);
+
+        return $content;
     }
 
     public function write(string $path, string $content): void
@@ -104,7 +110,7 @@ final class LocalFilesystem implements Filesystem
 
     public function isDirectory(string $path): bool
     {
-        return self::sandbox(function () use ($path): bool {
+        return (bool) self::sandbox(function () use ($path): bool {
             return is_dir($path);
         })(fn(bool $isDir) => $isDir);
     }
@@ -114,7 +120,7 @@ final class LocalFilesystem implements Filesystem
         self::sandbox(function () use ($path, $permissions): void {
             $permissions = $permissions ?? PosixPermissions::default();
 
-            mkdir($path, octdec((string) $permissions), true);
+            mkdir($path, (int) octdec((string) $permissions), true);
         });
     }
 

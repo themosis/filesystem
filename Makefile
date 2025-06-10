@@ -5,7 +5,7 @@ COMMAND=php --version
 OCI_IMAGE=php-dev
 OCI_ENV=
 
-RUN=podman run -it --rm $(OCI_ENV) -v "$$PWD":/package -w /package $(OCI_IMAGE)
+RUN=podman run -it --rm $(OCI_ENV) -v "$$PWD":/filesystem -w /filesystem $(OCI_IMAGE)
 
 .PHONY: analyze build-oci coverage install* php play test update*
 
@@ -42,7 +42,7 @@ coverage:
 	$(RUN) php tools/phpunit/vendor/bin/phpunit --configuration phpunit.xml --coverage-html coverage/html
 
 analyze:
-	$(RUN) php tools/phpstan/vendor/bin/phpstan analyze -v -c phpstan.neon cli
+	$(RUN) php tools/phpstan/vendor/bin/phpstan analyze -v -c phpstan.neon src
 
 fix:
 	$(RUN) php tools/phpcs/vendor/bin/phpcbf
