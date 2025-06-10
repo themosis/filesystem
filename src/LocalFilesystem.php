@@ -60,6 +60,13 @@ final class LocalFilesystem implements Filesystem
         })(fn(mixed $content) => $content);
     }
 
+    public function isLink(string $path): bool
+    {
+        return self::sandbox(function () use ($path): bool {
+            return is_link($path);
+        })(fn(bool $isLink) => $isLink);
+    }
+
     public function isFile(string $path): bool
     {
         return self::sandbox(function () use ($path): bool {
@@ -81,6 +88,20 @@ final class LocalFilesystem implements Filesystem
         });
     }
 
+    public function symlink(string $original, string $target): void
+    {
+        self::sandbox(function () use ($original, $target): void {
+            symlink($original, $target);
+        });
+    }
+
+    public function hardlink(string $original, string $target): void
+    {
+        self::sandbox(function () use ($original, $target): void {
+            link($original, $target);
+        });
+    }
+
     public function isDirectory(string $path): bool
     {
         return self::sandbox(function () use ($path): bool {
@@ -95,6 +116,11 @@ final class LocalFilesystem implements Filesystem
 
             mkdir($path, octdec((string) $permissions), true);
         });
+    }
+
+    public function deleteLink(string $path): void
+    {
+        $this->deleteFile($path);
     }
 
     public function deleteFile(string $path): void
@@ -126,12 +152,10 @@ final class LocalFilesystem implements Filesystem
                     /** @var SplFileInfo $element */
                     $elementPath = $element->getPathname();
 
-                    if (is_link($elementPath)) {
-                        $this->deleteFile($element->getPath());
-                    } elseif ($this->isDirectory($elementPath)) {
-                        $this->deleteDirectory($elementPath, false);
-                    } else {
+                    if ($this->isLink($elementPath) || $this->isFile($elementPath)) {
                         $this->deleteFile($elementPath);
+                    } else {
+                        $this->deleteDirectory($elementPath, false);
                     }
                 }
 

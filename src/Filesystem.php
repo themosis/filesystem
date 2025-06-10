@@ -19,15 +19,23 @@ interface Filesystem
 
     public function requireOnce(string $path, array $data = []): mixed;
 
+    public function isLink(string $path): bool;
+
     public function isFile(string $path): bool;
 
     public function read(string $path): string;
 
     public function write(string $path, string $content): void;
 
+    public function hardlink(string $original, string $target): void;
+
+    public function symlink(string $original, string $target): void;
+
     public function isDirectory(string $path): bool;
 
     public function makeDirectory(string $path, ?Permissions $permissions = null): void;
+
+    public function deleteLink(string $path): void;
 
     public function deleteFile(string $path): void;
 

@@ -10,9 +10,7 @@ declare(strict_types=1);
 namespace Themosis\Components\Filesystem\Tests;
 
 use PHPUnit\Framework\Attributes\Test;
-use Themosis\Components\Filesystem\Exceptions\DirectoryAlreadyExists;
 use Themosis\Components\Filesystem\Exceptions\FilesystemException;
-use Themosis\Components\Filesystem\Exceptions\InvalidFile;
 use Themosis\Components\Filesystem\Filesystem;
 use Themosis\Components\Filesystem\LocalFilesystem;
 
@@ -36,6 +34,7 @@ final class LocalFilesystemTest extends TestCase
         $this->assertTrue($filesystem->exists(__DIR__ . '/fixtures/config'));
 
         $this->assertFalse($filesystem->exists(__DIR__ . '/path/does/not/exist'));
+        $this->assertTrue($filesystem->doesNotExist(__DIR__ . '/path/does/not/exist'));
     }
 
     #[Test]
@@ -192,6 +191,42 @@ RESULT;
         $this->expectException(FilesystemException::class);
 
         $filesystem->write($file, 'New content for the file.');
+    }
+
+    #[Test]
+    public function itCanCreateVerifyDeleteASymbolicLink(): void
+    {
+        $filesystem = new LocalFilesystem();
+
+        $path = __DIR__ . '/fixdir';
+
+        $this->assertFalse($filesystem->isLink($path));
+
+        $filesystem->symlink(__DIR__ . '/fixtures', $path);
+
+        $this->assertTrue($filesystem->isLink($path));
+
+        $filesystem->deleteLink($path);
+
+        $this->assertFalse($filesystem->isLink($path));
+    }
+
+    #[Test]
+    public function itCanCreateVerifyDeleteAnHardLink(): void
+    {
+        $filesystem = new LocalFilesystem();
+
+        $path = __DIR__ . '/fixme';
+
+        $this->assertFalse($filesystem->isLink($path));
+
+        $filesystem->hardlink(__DIR__ . '/fixtures/file-a.php', $path);
+
+        $this->assertTrue($filesystem->isFile($path));
+
+        $filesystem->deleteLink($path);
+
+        $this->assertFalse($filesystem->isLink($path));
     }
 
     #[Test]
