@@ -10,6 +10,6 @@ namespace Themosis\Components\Filesystem\Exceptions;
 
 use ErrorException;
 
-class FilesystemException extends ErrorException
+final class FilesystemException extends ErrorException
 {
 }

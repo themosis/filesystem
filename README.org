@@ -5,11 +5,15 @@
 # SPDX-FileCopyrightText: 2025 Julien Lambé<julien@themosis.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-The Themosis filesystem component is a wrapper around PHP filesystem functions.
+The Themosis filesystem component is a wrapper around PHP filesystem
+functions.
 
-The library provides a ~Filesystem~ interface as well as a concrete ~LocalFilesystem~ implementation.
+The library provides a ~Filesystem~ interface as well as a concrete
+~LocalFilesystem~ implementation.
 
-The ~LocalFilesystem~ class can only be used to manage "local" files. If you need to deal with remote files, you will need to provide your own implementation of the ~Filesystem~ interface.
+The ~LocalFilesystem~ class can only be used to manage "local"
+files. If you need to deal with remote files, you will need to provide
+your own implementation of the ~Filesystem~ interface.
 
 ** Installation
 
@@ -20,6 +24,51 @@ Install the library using [[https://getcomposer.org/][Composer]]:
 #+end_src
 
 ** Usage
+
+If you're using this package to manage files in your application. We
+recommend to reference the ~Filesystem~ interface in your code instead
+of the concrete implementation.
+
+Only pass one of the package implementation filesystem class when
+instantiating a client object that requires a ~Filesystem~ instance in
+order to work.
+
+For example:
+
+#+begin_src php
+  <?php
+
+  use Themosis\Components\Filesystem\Filesystem;
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  //Instead of writing this class declaration...
+  class Application
+  {
+      public function __construct(
+          private LocalFilesystem $filesystem,
+      ) {}
+  }
+
+  // Write this instead...
+  class Application
+  {
+      public function __construct(
+          private Filesystem $filesystem,
+      ) {}
+  }
+
+  // When instantiating your client application:
+  $app = new Application(
+      filesystem: new LocalFilesystem(),
+  );
+#+end_src
+
+Find below the available methods on a ~Filesystem~ instance to help you
+manage application files.
+
+You can also find additional information for each concrete
+implementation:
+- [[#localfilesystem][LocalFilesystem]]
 
 *** Read file content
 
@@ -148,6 +197,21 @@ The filesystem exposes the ~exists()~ method to let you check if a file exists:
   }
 #+end_src
 
+It also provides the opposite method ~doesNotExist()~ for better
+convenience:
+
+#+begin_src php
+  <?php
+
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+
+  if ( $filesystem->doesNotExist('/path/to/file.txt')) {
+      // Do something...
+  }
+#+end_src
+
 *** Check path is a file
 
 You can verify if the given path is targeting a file using the ~isFile()~ method:
@@ -178,6 +242,61 @@ You can verify if the given path is targeting a directory using the ~isDirectory
   if ($filesystem->isDirectory('/path/to/dir')) {
       // Do something...
   }
+#+end_src
+
+*** Check path is a symlink
+
+You can verify if the given path is targeting a symbolic link using
+the ~isLink()~ method:
+
+#+begin_src php
+  <?php
+
+  use Themosis\Components\Filesystem\LocalFilesystem;
+  
+  $filesystem = new LocalFilesystem();
+
+  if ($filesystem->isLink('/path/to/symlink')) {
+      // Do something...
+  }
+#+end_src
+
+*** Create links
+
+You can create both hard and symbolic links using the ~hardlink()~ and
+~symlink()~ methods.
+
+**** Create an hard link
+
+Use the ~hardlink()~ method to create an hard link. The first argument
+is the "original" path and the second argument is the "target" path,
+name of the link:
+
+#+begin_src php
+  <?php
+
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+
+  $filesytem->hardlink('/path/to/file', '/path/to/targetname');
+#+end_src
+
+**** Create a symbolic link
+
+Use the ~symlink()~ method to create a symbolic link. Just like the
+hardlink method, first argument is the path to the "original" element
+(file, directory), and the second argument is the path to the "target"
+which represents the link in the filesystem:
+
+#+begin_src php
+  <?php
+
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+
+  $filesytem->symlink('/path/to/file', '/path/to/targetname');  
 #+end_src
 
 *** Create a directory
@@ -227,3 +346,94 @@ The permissions are ignored when the application runs on Windows.
 The ~LocalFilesystem~ implementation is using the PHP ~mkdir()~ function under the hood.
 For details on which permissions bits to define, check documentation for the system ~chmod~ command.
 
+*** Delete a link
+
+You can delete a link, hard or symbolic, using the ~deleteLink()~
+method:
+
+#+begin_src php
+  <?php
+
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+
+  $filesystem->deleteLink('/path/to/link');
+#+end_src
+
+*** Delete a file
+
+In order to delete a file, call the ~deleteFile()~ method and pass the
+file path as the only argument:
+
+#+begin_src php
+  <?php
+
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+
+  $filesystem->deleteFile('/path/to/file.php');
+#+end_src
+
+*** Delete a directory
+
+The Filesystem interface provides the ~deleteDirectory()~ method to
+delete directories. By default, you can only delete a directory if,
+and only if, it is empty. The method has two parameters:
+1. A string representing the directory path.
+2. A boolean value to delete directory and its content
+   recursively. Default value is ~false~.
+
+#+begin_src php
+  <?php
+
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+
+  $filesystem->deleteDirectory('/path/to/empty/directory');  
+#+end_src
+
+The above code snippet deletes the directory if it is empty.
+
+**** Recursively delete a directory
+
+If you are sure that you want to delete a directory and all its
+content, you can pass true as the second argument to the
+~deleteDirectory()~ method like so:
+
+#+begin_src php
+  <?php
+  
+  use Themosis\Components\Filesystem\LocalFilesystem;
+
+  $filesystem = new LocalFilesystem();
+
+  $filesystem->deleteDirectory('/path/to/directory', recursive: true);
+#+end_src
+
+** LocalFilesystem
+
+The LocalFilesystem class is one implementation of the Filesystem
+interface. The class is leveraging core PHP functions to handle file
+related actions. As its name indicates, this class should only be used
+to manage a "local" filesystem (current application server,...).
+
+*** Errors
+
+When working with the ~LocalFilesystem~ instance, any error is
+automatically converted to a ~FilesystemException~. This way, you have
+the possibility to wrap any filesystem operation between a try catch
+block and easily handle the issue.
+
+#+begin_src php
+  <?php
+
+  // Code...
+  try {
+      $filesystem->makeDirectory('/path/to/dir');
+  } catch (FilesystemException $exception) {
+      // Retry or log the error...
+  }
+#+end_src
