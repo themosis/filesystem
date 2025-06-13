@@ -45,7 +45,7 @@ reuse-lint:
 	podman run --rm -v "$$PWD":/data fsfe/reuse lint
 
 test:
-	$(RUN) php tools/phpunit/vendor/bin/phpunit --configuration phpunit.xml
+	$(RUN) php tools/phpunit/vendor/bin/phpunit --configuration phpunit.xml --testdox
 
 coverage: OCI_ENV=--env "XDEBUG_MODE=coverage"
 coverage:

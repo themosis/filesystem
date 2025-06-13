@@ -15,7 +15,7 @@ use Themosis\Components\Filesystem\PosixPermissions;
 final class PosixPermissionsTest extends TestCase
 {
     #[Test]
-    public function itCanNotAllow_outOfRangeBits(): void
+    public function it_can_not_allow_out_of_range_bits(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Owner bits value of 0 is out of the [1-7] range.');
@@ -46,7 +46,7 @@ final class PosixPermissionsTest extends TestCase
     }
 
     #[Test]
-    public function itCanProvide_aDefaultPermissionOctalString(): void
+    public function it_can_provide_a_default_permission_octal_string(): void
     {
         $permissions = PosixPermissions::default();
 

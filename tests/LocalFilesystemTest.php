@@ -182,7 +182,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanNotWriteContent_ifPathIsADirectory(): void
+    public function it_can_not_write_content_if_path_is_a_directory(): void
     {
         $filesystem = new LocalFilesystem();
 
@@ -194,7 +194,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanCreateVerifyDeleteASymbolicLink(): void
+    public function it_can_create_verify_delete_a_symbolic_link(): void
     {
         $filesystem = new LocalFilesystem();
 
@@ -212,7 +212,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanCreateVerifyDeleteAnHardLink(): void
+    public function it_can_create_verify_delete_an_hard_link(): void
     {
         $filesystem = new LocalFilesystem();
 
@@ -230,7 +230,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanCheckPathIsADirectory(): void
+    public function it_can_check_path_is_a_directory(): void
     {
         $filesystem = new LocalFilesystem();
 
@@ -241,7 +241,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanMakeADirectory_ifDirectoryDoesNotExist(): void
+    public function it_can_make_a_directory_if_directory_does_not_exist(): void
     {
         $filesystem = new LocalFilesystem();
 
@@ -257,7 +257,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanNotMakeADirectory_ifDirectoryAlreadyExists(): void
+    public function it_can_not_make_a_directory_if_directory_already_exists(): void
     {
         $filesystem = new LocalFilesystem();
 
@@ -271,7 +271,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanMakeNestedDirectory(): void
+    public function it_can_make_nested_directory(): void
     {
         $filesystem = new LocalFilesystem();
 
@@ -293,7 +293,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanDeleteAnExistingFile(): void
+    public function it_can_delete_an_existing_file(): void
     {
         $filesystem = new LocalFilesystem();
 
@@ -309,7 +309,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanNotDeleteAFile_ifItDoesNotExist(): void
+    public function it_can_not_delete_a_file_if_it_does_not_exist(): void
     {
         $this->expectException(FilesystemException::class);
 
@@ -319,7 +319,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanNotDeleteAFile_ifPathIsInvalid(): void
+    public function it_can_not_delete_a_file_if_path_is_invalid(): void
     {
         $this->expectException(FilesystemException::class);
 
@@ -329,7 +329,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanDeleteDirectory_ifEmpty(): void
+    public function it_can_delete_directory_if_empty(): void
     {
         $filesystem = new LocalFilesystem();
 
@@ -347,7 +347,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanNotDeleteDirectory_ifNotEmpty(): void
+    public function it_can_not_delete_directory_if_not_empty(): void
     {
         $filesystem = new LocalFilesystem();
 
@@ -366,7 +366,7 @@ RESULT;
     }
 
     #[Test]
-    public function itCanDeleteNonEmptyDirectory_ifRecursive(): void
+    public function it_can_delete_non_empty_directory_if_recursive(): void
     {
         $filesystem = new LocalFilesystem();
 
